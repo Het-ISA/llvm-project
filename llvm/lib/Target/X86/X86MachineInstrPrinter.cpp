@@ -45,9 +45,7 @@ bool X86MachineInstrPrinter::runOnMachineFunction(MachineFunction &MF) {
   }
   const TargetInstrInfo &TII = *MF.getSubtarget().getInstrInfo();
   MachineBasicBlock &EntryBlock = MF.front();
-  EntryBlock.insert(EntryBlock.begin(),
-                          BuildMI(EntryBlock, EntryBlock.begin(), EntryBlock.begin()->getDebugLoc(), TII.get(X86::NOOP)));
-
+  BuildMI(EntryBlock, EntryBlock.begin(), EntryBlock.begin()->getDebugLoc(), TII.get(X86::NOOP));
   File << "MachineFunction: " << MF.getName() << "\n";
   for (auto &MBB: MF) {
     File << "Contents of MachineBasicBlock:\n";
