@@ -171,7 +171,7 @@ FunctionPass *createX86SpeculativeExecutionSideEffectSuppression();
 FunctionPass *createX86ArgumentStackSlotPass();
 
 // newly added machine passes.
-FunctionPass *createX86MachineInstrPrinter();
+FunctionPass *createX86MachineInstrPrinterPass();
 
 
 

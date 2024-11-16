@@ -565,7 +565,7 @@ void X86PassConfig::addPreRegAlloc() {
   addPass(createX86FlagsCopyLoweringPass());
   addPass(createX86DynAllocaExpander());
   // new
-  addPass(createX86MachineInstrPrinter());
+  addPass(createX86MachineInstrPrinterPass());
   // 
 
   if (getOptLevel() != CodeGenOptLevel::None)
