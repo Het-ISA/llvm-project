@@ -1,7 +1,10 @@
 #include "X86.h"
 #include "X86InstrInfo.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
+#include "llvm/CodeGen/MachineInstrBuilder.h"
+#include "llvm/CodeGen/TargetInstrInfo.h"
 #include "llvm/CodeGen/TargetRegisterInfo.h"
+#include "llvm/IR/Function.h"
 #include "llvm/Support/FileSystem.h"
 
 using namespace llvm;
@@ -36,6 +39,10 @@ bool X86MachineInstrPrinter::runOnMachineFunction(MachineFunction &MF) {
     errs() << "Error opening file: " << EC.message() << "\n";
     return false;
   }
+  const TargetInstrInfo &TII = *MF.getSubtarget().getInstrInfo();
+  MachineBasicBlock &EntryBlock = MF.front();
+  EntryBlock.insert(EntryBlock.begin(),
+                          BuildMI(EntryBlock, EntryBlock.begin(), DebugLoc(), TII.get(X86::NOOP)));
 
   File << "MachineFunction: " << MF.getName() << "\n";
   for (auto &MBB: MF) {
