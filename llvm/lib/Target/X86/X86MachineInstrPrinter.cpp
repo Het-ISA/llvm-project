@@ -27,6 +27,10 @@ public:
 
   StringRef getPassName() const override { return X86_MACHINEINSTR_PRINTER_PASS_NAME;}
 
+  // void addPadding(MachineBasicBlock *MBB,
+  //                 MachineBasicBlock::iterator &MBBI,
+  //                 unsigned int NOOPsToAdd);
+
 };
 
 char X86MachineInstrPrinter::ID = 0;
@@ -42,7 +46,7 @@ bool X86MachineInstrPrinter::runOnMachineFunction(MachineFunction &MF) {
   const TargetInstrInfo &TII = *MF.getSubtarget().getInstrInfo();
   MachineBasicBlock &EntryBlock = MF.front();
   EntryBlock.insert(EntryBlock.begin(),
-                          BuildMI(EntryBlock, EntryBlock.begin(), DebugLoc(), TII.get(X86::NOOP)));
+                          BuildMI(EntryBlock, EntryBlock.begin(), EntryBlock.begin()->getDebugLoc(), TII.get(X86::NOOP)));
 
   File << "MachineFunction: " << MF.getName() << "\n";
   for (auto &MBB: MF) {
@@ -73,3 +77,15 @@ FunctionPass *createX86MachineInstrPrinterPass() { return new X86MachineInstrPri
 
 }
 
+
+/// addPadding - Add the given number of NOOP instructions to the function
+/// just prior to the return at MBBI
+// void X86MachineInstrPrinter::addPadding(MachineBasicBlock *MBB,
+//                               MachineBasicBlock::iterator &MBBI,
+//                               unsigned int NOOPsToAdd) {
+//   const DebugLoc &DL = MBBI->getDebugLoc();
+//   unsigned IssueWidth = TSM.getIssueWidth();
+
+//   for (unsigned i = 0, e = IssueWidth * NOOPsToAdd; i != e; ++i)
+//     BuildMI(*MBB, MBBI, DL, TSM.getInstrInfo()->get(X86::NOOP));
+// }
