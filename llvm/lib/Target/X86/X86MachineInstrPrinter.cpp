@@ -6,7 +6,7 @@
 using namespace llvm;
 
 
-#define X86_MACHINEINSTR_PRINTER_PASS_NAME "Dummey X86 machineinstr printer pass"
+#define X86_MACHINEINSTR_PRINTER_PASS_NAME "Dummy X86 machineinstr printer pass"
 
 
 namespace {
