@@ -30,7 +30,7 @@ char X86MachineInstrPrinter::ID = 0;
 
 bool X86MachineInstrPrinter::runOnMachineFunction(MachineFunction &MF) {
   std::error_code EC;
-  llvm::raw_fd_ostream File("code_dump.txt", EC, llvm::sys::fs::OF_Append);
+  llvm::raw_fd_ostream File("obj/x86_code_dump.txt", EC, llvm::sys::fs::OF_Append);
 
   if (EC) {
     errs() << "Error opening file: " << EC.message() << "\n";
