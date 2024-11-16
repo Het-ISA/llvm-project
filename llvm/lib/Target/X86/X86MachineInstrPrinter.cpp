@@ -28,12 +28,13 @@ public:
 char X86MachineInstrPrinter::ID = 0;
 
 bool X86MachineInstrPrinter::runOnMachineFunction(MachineFunction &MF) {
+  errs() << "MachineFunction: " << MF.getName() << "\n";
   for (auto &MBB: MF) {
-    errs() << "Contents of MachineBasicBlock:\n";
+    errs() << "\tContents of MachineBasicBlock:\n";
     errs() << MBB << "\n";
     const BasicBlock *BB = MBB.getBasicBlock();
     errs() << "Contents of BasicBlock corresponding to MachineBasicBlock:\n";
-    errs() << BB << "\n";
+    errs() << BB << "\n\n\n";
   }
   return false;
 }
