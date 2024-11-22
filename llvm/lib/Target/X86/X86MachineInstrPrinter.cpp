@@ -46,7 +46,7 @@ bool X86MachineInstrPrinter::runOnMachineFunction(MachineFunction &MF) {
   const TargetInstrInfo &TII = *MF.getSubtarget().getInstrInfo();
   MachineBasicBlock &EntryBlock = MF.front();
 
-  MachineBasicBlock::iterator ReturnLoc = --EntryBlock->end();
+  MachineBasicBlock::iterator ReturnLoc = --EntryBlock.end();
 
   while (ReturnLoc->isDebugInstr())
     --ReturnLoc;
