@@ -44,12 +44,13 @@ bool X86MachineInstrPrinter::runOnMachineFunction(MachineFunction &MF) {
     return false;
   }
   const TargetInstrInfo &TII = *MF.getSubtarget().getInstrInfo();
-  MachineBasicBlock &EntryBlock = MF.front();
+  MachineBasicBlock &EntryBlock = MF.back();
 
   MachineBasicBlock::iterator ReturnLoc = --EntryBlock.end();
 
-  while (ReturnLoc->isDebugInstr())
-    --ReturnLoc;
+  while (ReturnLoc->isDebugInstr()) {
+      --ReturnLoc;
+  }
   assert(ReturnLoc->isReturn() && !ReturnLoc->isCall() &&
           "Basic block does not end with RET");
 
