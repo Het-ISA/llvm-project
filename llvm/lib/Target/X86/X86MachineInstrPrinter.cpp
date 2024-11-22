@@ -45,7 +45,15 @@ bool X86MachineInstrPrinter::runOnMachineFunction(MachineFunction &MF) {
   }
   const TargetInstrInfo &TII = *MF.getSubtarget().getInstrInfo();
   MachineBasicBlock &EntryBlock = MF.front();
-  BuildMI(EntryBlock, EntryBlock.begin(), EntryBlock.begin()->getDebugLoc(), TII.get(X86::NOOP));
+
+  MachineBasicBlock::iterator ReturnLoc = --EntryBlock->end();
+
+  while (ReturnLoc->isDebugInstr())
+    --ReturnLoc;
+  assert(ReturnLoc->isReturn() && !ReturnLoc->isCall() &&
+          "Basic block does not end with RET");
+
+  BuildMI(EntryBlock, ReturnLoc, ReturnLoc->getDebugLoc(), TII.get(X86::NOOP));
   File << "MachineFunction: " << MF.getName() << "\n";
   for (auto &MBB: MF) {
     File << "Contents of MachineBasicBlock:\n";
