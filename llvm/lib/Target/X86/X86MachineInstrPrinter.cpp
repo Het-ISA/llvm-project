@@ -37,7 +37,7 @@ char X86MachineInstrPrinter::ID = 0;
 
 bool X86MachineInstrPrinter::runOnMachineFunction(MachineFunction &MF) {
   std::error_code EC;
-  llvm::raw_fd_ostream File("obj/x86_code_dump.txt", EC, llvm::sys::fs::OF_Append);
+  llvm::raw_fd_ostream File("obj/funnames", EC, llvm::sys::fs::OF_Append);
 
   if (EC) {
     errs() << "Error opening file: " << EC.message() << "\n";
@@ -55,17 +55,19 @@ bool X86MachineInstrPrinter::runOnMachineFunction(MachineFunction &MF) {
           "Basic block does not end with RET");
 
   BuildMI(EntryBlock, ReturnLoc, ReturnLoc->getDebugLoc(), TII.get(X86::NOOP));
-  File << "MachineFunction: " << MF.getName() << "\n";
-  for (auto &MBB: MF) {
-    File << "Contents of MachineBasicBlock:\n";
-    File << MBB << "\n";
-    const BasicBlock *BB = MBB.getBasicBlock();
-    File << "Contents of BasicBlock corresponding to MachineBasicBlock:\n";
-    for (const auto &Inst: *BB) {
-      File << Inst << '\n';
-    }
-    File << BB << "\n\n\n";
-  }
+  File << MF.getName() << "\n";
+
+  // for (auto &MBB: MF) {
+  //   File << "Contents of MachineBasicBlock:\n";
+  //   File << MBB << "\n";
+  //   const BasicBlock *BB = MBB.getBasicBlock();
+  //   File << "Contents of BasicBlock corresponding to MachineBasicBlock:\n";
+  //   for (const auto &Inst: *BB) {
+  //     File << Inst << '\n';
+  //   }
+  //   File << BB << "\n\n\n";
+  // }
+
   return false;
 }
 
