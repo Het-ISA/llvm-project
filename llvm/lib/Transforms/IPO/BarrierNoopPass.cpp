@@ -17,11 +17,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "llvm/IR/IRBuilder.h"
 #include "llvm/InitializePasses.h"
 #include "llvm/Pass.h"
 #include "llvm/Transforms/IPO.h"
-
 using namespace llvm;
 
 namespace {
@@ -38,21 +36,7 @@ public:
     initializeBarrierNoopPass(*PassRegistry::getPassRegistry());
   }
 
-  bool runOnModule(Module &M) override {
-    // Create the padding function
-    LLVMContext &Context = M.getContext();
-    FunctionType *FuncTy = FunctionType::get(Type::getVoidTy(Context), false);
-    Function *PaddingFunction = Function::Create(
-        FuncTy, Function::ExternalLinkage, "padding_fun", M);
-
-    // Add an entry block to the function
-    BasicBlock *BB = BasicBlock::Create(Context, "entry", PaddingFunction);
-    IRBuilder<> Builder(BB);
-    Builder.CreateRetVoid(); // Add a return void instruction
-
-    // Indicate that the module was modified
-    return true;
-  }
+  bool runOnModule(Module &M) override { return false; }
 };
 }
 
