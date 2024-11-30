@@ -36,6 +36,8 @@
 #include "llvm/Support/LEB128.h"
 #include "llvm/Target/TargetOptions.h"
 #include <cstdlib>
+#include <fstream>
+#include <string>
 
 #define DEBUG_TYPE "x86-fl"
 
@@ -2256,6 +2258,34 @@ void X86FrameLowering::emitPrologue(MachineFunction &MF,
     if (NeedsCLD) {
       BuildMI(MBB, MBBI, DL, TII.get(X86::CLD))
           .setMIFlag(MachineInstr::FrameSetup);
+    }
+  }
+
+  std::ifstream funnames_file("obj/funnames");
+
+  if (!funnames_file.is_open()) {
+    errs() << "Error opening file\n";
+  }
+
+  std::string line;
+  std::getline(funnames_file, line);
+  // if first function
+  if (line.substr(0, line.find(":")) == MF.getName().data()) {
+    std::ifstream paddings_file("obj/x86_pad");
+
+    if (!paddings_file.is_open()) {
+      errs() << "Error opening file\n";
+    }
+    std::getline(paddings_file, line);
+    if (line.substr(0, line.find(":")) == "init_pad") {
+      std::string size_str = line.substr(line.find(":") + 1, line.size());
+      int size = std::atoi(size_str.c_str());
+
+      MBBI = MBB.begin();
+
+      for (auto i = 0; i < size; ++i) {
+        BuildMI(MBB, MBBI, MBBI->getDebugLoc(), TII.get(X86::NOOP));
+      }
     }
   }
 
