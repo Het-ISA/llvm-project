@@ -120,9 +120,9 @@ static cl::opt<bool> EnableAtomicTidy(
     cl::init(true));
 
 static cl::opt<bool>
-EnableEarlyIfConversion("aarch64-enable-early-ifcvt", cl::Hidden,
-                        cl::desc("Run early if-conversion"),
-                        cl::init(true));
+    EnableEarlyIfConversion("aarch64-enable-early-ifcvt", cl::Hidden,
+                            cl::desc("Run early if-conversion"),
+                            cl::init(true));
 
 static cl::opt<bool>
     EnableCondOpt("aarch64-enable-condopt",
@@ -270,6 +270,10 @@ extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeAArch64Target() {
   initializeAArch64LowerHomogeneousPrologEpilogPass(*PR);
   initializeAArch64DAGToDAGISelLegacyPass(*PR);
   initializeAArch64GlobalsTaggingPass(*PR);
+
+  // new
+  initializeAArch64MachineInstrPrinterPass(*PR);
+  //
 }
 
 //===----------------------------------------------------------------------===//
@@ -476,7 +480,7 @@ AArch64TargetMachine::getSubtargetImpl(const Function &F) const {
   return I.get();
 }
 
-void AArch64leTargetMachine::anchor() { }
+void AArch64leTargetMachine::anchor() {}
 
 AArch64leTargetMachine::AArch64leTargetMachine(
     const Target &T, const Triple &TT, StringRef CPU, StringRef FS,
@@ -484,7 +488,7 @@ AArch64leTargetMachine::AArch64leTargetMachine(
     std::optional<CodeModel::Model> CM, CodeGenOptLevel OL, bool JIT)
     : AArch64TargetMachine(T, TT, CPU, FS, Options, RM, CM, OL, JIT, true) {}
 
-void AArch64beTargetMachine::anchor() { }
+void AArch64beTargetMachine::anchor() {}
 
 AArch64beTargetMachine::AArch64beTargetMachine(
     const Target &T, const Triple &TT, StringRef CPU, StringRef FS,
@@ -535,7 +539,7 @@ public:
     return DAG;
   }
 
-  void addIRPasses()  override;
+  void addIRPasses() override;
   bool addPreISel() override;
   void addCodeGenPrepare() override;
   bool addInstSelector() override;
@@ -794,6 +798,10 @@ void AArch64PassConfig::addPreRegAlloc() {
   if (TM->getOptLevel() != CodeGenOptLevel::None &&
       EnableDeadRegisterElimination)
     addPass(createAArch64DeadRegisterDefinitions());
+
+  // new
+  addPass(createAArch64MachineInstrPrinterPass());
+  //
 
   // Use AdvSIMD scalar instructions whenever profitable.
   if (TM->getOptLevel() != CodeGenOptLevel::None && EnableAdvSIMDScalar) {

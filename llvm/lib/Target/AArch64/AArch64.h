@@ -75,22 +75,25 @@ FunctionPass *createAArch64StackTaggingPreRAPass();
 ModulePass *createAArch64GlobalsTaggingPass();
 ModulePass *createAArch64Arm64ECCallLoweringPass();
 
-void initializeAArch64A53Fix835769Pass(PassRegistry&);
-void initializeAArch64A57FPLoadBalancingPass(PassRegistry&);
-void initializeAArch64AdvSIMDScalarPass(PassRegistry&);
-void initializeAArch64PointerAuthPass(PassRegistry&);
-void initializeAArch64BranchTargetsPass(PassRegistry&);
-void initializeAArch64CFIFixupPass(PassRegistry&);
+// newly added machine passes.
+FunctionPass *createAArch64MachineInstrPrinterPass();
+
+void initializeAArch64A53Fix835769Pass(PassRegistry &);
+void initializeAArch64A57FPLoadBalancingPass(PassRegistry &);
+void initializeAArch64AdvSIMDScalarPass(PassRegistry &);
+void initializeAArch64PointerAuthPass(PassRegistry &);
+void initializeAArch64BranchTargetsPass(PassRegistry &);
+void initializeAArch64CFIFixupPass(PassRegistry &);
 void initializeAArch64CollectLOHPass(PassRegistry &);
-void initializeAArch64CompressJumpTablesPass(PassRegistry&);
+void initializeAArch64CompressJumpTablesPass(PassRegistry &);
 void initializeAArch64CondBrTuningPass(PassRegistry &);
-void initializeAArch64ConditionOptimizerPass(PassRegistry&);
+void initializeAArch64ConditionOptimizerPass(PassRegistry &);
 void initializeAArch64ConditionalComparesPass(PassRegistry &);
 void initializeAArch64DAGToDAGISelLegacyPass(PassRegistry &);
-void initializeAArch64DeadRegisterDefinitionsPass(PassRegistry&);
+void initializeAArch64DeadRegisterDefinitionsPass(PassRegistry &);
 void initializeAArch64ExpandPseudoPass(PassRegistry &);
 void initializeAArch64GlobalsTaggingPass(PassRegistry &);
-void initializeAArch64LoadStoreOptPass(PassRegistry&);
+void initializeAArch64LoadStoreOptPass(PassRegistry &);
 void initializeAArch64LowerHomogeneousPrologEpilogPass(PassRegistry &);
 void initializeAArch64MIPeepholeOptPass(PassRegistry &);
 void initializeAArch64O0PreLegalizerCombinerPass(PassRegistry &);
@@ -99,21 +102,25 @@ void initializeAArch64PostLegalizerCombinerPass(PassRegistry &);
 void initializeAArch64PostLegalizerLoweringPass(PassRegistry &);
 void initializeAArch64PostSelectOptimizePass(PassRegistry &);
 void initializeAArch64PreLegalizerCombinerPass(PassRegistry &);
-void initializeAArch64PromoteConstantPass(PassRegistry&);
-void initializeAArch64RedundantCopyEliminationPass(PassRegistry&);
+void initializeAArch64PromoteConstantPass(PassRegistry &);
+void initializeAArch64RedundantCopyEliminationPass(PassRegistry &);
 void initializeAArch64SIMDInstrOptPass(PassRegistry &);
 void initializeAArch64SLSHardeningPass(PassRegistry &);
 void initializeAArch64SpeculationHardeningPass(PassRegistry &);
 void initializeAArch64StackTaggingPass(PassRegistry &);
 void initializeAArch64StackTaggingPreRAPass(PassRegistry &);
-void initializeAArch64StorePairSuppressPass(PassRegistry&);
-void initializeFalkorHWPFFixPass(PassRegistry&);
-void initializeFalkorMarkStridedAccessesLegacyPass(PassRegistry&);
-void initializeLDTLSCleanupPass(PassRegistry&);
+void initializeAArch64StorePairSuppressPass(PassRegistry &);
+void initializeFalkorHWPFFixPass(PassRegistry &);
+void initializeFalkorMarkStridedAccessesLegacyPass(PassRegistry &);
+void initializeLDTLSCleanupPass(PassRegistry &);
 void initializeSMEABIPass(PassRegistry &);
 void initializeSMEPeepholeOptPass(PassRegistry &);
 void initializeSVEIntrinsicOptsPass(PassRegistry &);
 void initializeAArch64Arm64ECCallLoweringPass(PassRegistry &);
+
+// newly added initialization
+void initializeAArch64MachineInstrPrinterPass(PassRegistry &);
+
 } // end namespace llvm
 
 #endif
