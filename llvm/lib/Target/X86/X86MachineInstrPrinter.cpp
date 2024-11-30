@@ -6,12 +6,14 @@
 #include "llvm/CodeGen/TargetRegisterInfo.h"
 #include "llvm/IR/Function.h"
 #include "llvm/Support/FileSystem.h"
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <unordered_set>
 
 using namespace llvm;
 
-
 #define X86_MACHINEINSTR_PRINTER_PASS_NAME "Dummy X86 machineinstr printer pass"
-
 
 namespace {
 
@@ -25,12 +27,13 @@ public:
 
   bool runOnMachineFunction(MachineFunction &MF) override;
 
-  StringRef getPassName() const override { return X86_MACHINEINSTR_PRINTER_PASS_NAME;}
+  StringRef getPassName() const override {
+    return X86_MACHINEINSTR_PRINTER_PASS_NAME;
+  }
 
   // void addPadding(MachineBasicBlock *MBB,
   //                 MachineBasicBlock::iterator &MBBI,
   //                 unsigned int NOOPsToAdd);
-
 };
 
 char X86MachineInstrPrinter::ID = 0;
@@ -45,17 +48,64 @@ bool X86MachineInstrPrinter::runOnMachineFunction(MachineFunction &MF) {
   }
   const TargetInstrInfo &TII = *MF.getSubtarget().getInstrInfo();
   MachineBasicBlock &EntryBlock = MF.back();
+  File << MF.getName() << "\n";
 
   MachineBasicBlock::iterator ReturnLoc = --EntryBlock.end();
 
   while (ReturnLoc->isDebugInstr()) {
-      --ReturnLoc;
+    --ReturnLoc;
   }
-  assert(ReturnLoc->isReturn() && !ReturnLoc->isCall() &&
-          "Basic block does not end with RET");
 
-  BuildMI(EntryBlock, ReturnLoc, ReturnLoc->getDebugLoc(), TII.get(X86::NOOP));
-  File << MF.getName() << "\n";
+  assert(ReturnLoc->isReturn() && !ReturnLoc->isCall() &&
+         "Basic block does not end with RET");
+
+  std::unordered_set<std::string> data;
+  std::ifstream paddings_file("obj/x86_pad");
+
+  if (!paddings_file.is_open()) {
+    errs() << "Error opening file\n";
+    return false;
+  }
+
+  std::string line;
+  while (std::getline(paddings_file, line)) {
+    // Process each line as needed
+    std::string function_name = line.substr(0, line.find(":"));
+    if (function_name == MF.getName().data()) {
+      std::string size_str = line.substr(line.find(":") + 1, line.size());
+      int size = std::atoi(size_str.c_str());
+
+      for (auto i = 0; i < size; ++i) {
+        BuildMI(EntryBlock, ReturnLoc, ReturnLoc->getDebugLoc(),
+                TII.get(X86::NOOP));
+      }
+    }
+  }
+
+  paddings_file.close(); // Close the file
+
+  // std::unique_ptr<llvm::MemoryBuffer> &buffer = bufferOrErr.get();
+  // llvm::StringRef content = buffer->getBuffer();
+  // errs() << content.data() << '\n';
+
+  // for (llvm::StringRef line : content.split('\n')) {
+  //   llvm::StringRef trimmed = line.trim();
+  //   if (!trimmed.empty()) {
+  //     llvm::StringRef functionName =
+  //         trimmed.split(':').first.trim(); // Extract name before ':'
+  //     data.insert(functionName.str());
+  //   }
+  // }
+
+  // Get the function name from MockMachineFunction
+  // llvm::StringRef functionName = MF.getName();
+
+  // // Check if the function name exists in the data
+  // if (data.find(functionName.data()) != data.end()) {
+  //   File << "Function " << functionName << " found in data.txt\n";
+  // } else {
+  //   File << "Function " << functionName << " not found in data.txt\n";
+  // }
 
   // for (auto &MBB: MF) {
   //   File << "Contents of MachineBasicBlock:\n";
@@ -73,19 +123,19 @@ bool X86MachineInstrPrinter::runOnMachineFunction(MachineFunction &MF) {
 
 } // end of anonymous namespace
 
-
 INITIALIZE_PASS(X86MachineInstrPrinter, "x86-machineinstr-printer",
-  X86_MACHINEINSTR_PRINTER_PASS_NAME,
-  true, // is CFG only?
-  true  // is analysis?
+                X86_MACHINEINSTR_PRINTER_PASS_NAME,
+                true, // is CFG only?
+                true  // is analysis?
 )
 
 namespace llvm {
-  
-FunctionPass *createX86MachineInstrPrinterPass() { return new X86MachineInstrPrinter();}
 
+FunctionPass *createX86MachineInstrPrinterPass() {
+  return new X86MachineInstrPrinter();
 }
 
+} // namespace llvm
 
 /// addPadding - Add the given number of NOOP instructions to the function
 /// just prior to the return at MBBI
