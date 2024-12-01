@@ -63,7 +63,7 @@ bool X86MachineInstrPrinter::runOnMachineFunction(MachineFunction &MF) {
   std::ifstream paddings_file("obj/x86_pad");
 
   if (!paddings_file.is_open()) {
-    errs() << "Error opening file\n";
+    errs() << "Error opening x86_pad in x86 NOP appender\n";
     return false;
   }
 

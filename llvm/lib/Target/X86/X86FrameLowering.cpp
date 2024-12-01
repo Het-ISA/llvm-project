@@ -2264,7 +2264,7 @@ void X86FrameLowering::emitPrologue(MachineFunction &MF,
   std::ifstream funnames_file("obj/funnames");
 
   if (!funnames_file.is_open()) {
-    errs() << "Error opening file\n";
+    errs() << "Error opening file funnames in X86 emitPrologue\n";
   }
 
   std::string line;
@@ -2274,7 +2274,7 @@ void X86FrameLowering::emitPrologue(MachineFunction &MF,
     std::ifstream paddings_file("obj/x86_pad");
 
     if (!paddings_file.is_open()) {
-      errs() << "Error opening file\n";
+      errs() << "Error opening file x86_pad in X86 emitPrologue\n";
     }
     std::getline(paddings_file, line);
     if (line.substr(0, line.find(":")) == "init_pad") {

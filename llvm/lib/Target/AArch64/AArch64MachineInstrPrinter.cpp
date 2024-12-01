@@ -65,7 +65,7 @@ bool AArch64MachineInstrPrinter::runOnMachineFunction(MachineFunction &MF) {
   std::ifstream paddings_file("obj/arm_pad");
 
   if (!paddings_file.is_open()) {
-    errs() << "Error opening file\n";
+    errs() << "Error opening arm_pad in AArch64 NOP appender\n";
     return false;
   }
 
